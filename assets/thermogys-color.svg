@@ -1,0 +1,32 @@
+<svg viewBox="0 0 1860 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&amp;display=swap');</style>
+    <clipPath id="cl">
+      <rect x="0" y="0" width="98.5" height="200" />
+    </clipPath>
+    <clipPath id="cr">
+      <rect x="101.5" y="0" width="1860" height="200" />
+    </clipPath>
+  </defs>
+
+  <!-- Badge left: navy -->
+  <g clip-path="url(#cl)">
+    <circle cx="100" cy="100" r="80" fill="#0F172A" />
+  </g>
+  <!-- Badge right: cyan -->
+  <g clip-path="url(#cr)">
+    <circle cx="100" cy="100" r="80" fill="#06B6D4" />
+  </g>
+
+  <!-- T left: cyan on navy -->
+  <g clip-path="url(#cl)">
+    <path d="M 45 55 L 155 55 L 155 79 L 113.5 79 L 113.5 147.5 L 86.5 147.5 L 86.5 79 L 45 79 Z" fill="#06B6D4" />
+  </g>
+  <!-- T right: navy on cyan -->
+  <g clip-path="url(#cr)">
+    <path d="M 45 55 L 155 55 L 155 79 L 113.5 79 L 113.5 147.5 L 86.5 147.5 L 86.5 79 L 45 79 Z" fill="#0F172A" />
+  </g>
+
+  <!-- Wordmark -->
+  <text x="290" y="180" font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="700" font-size="222" fill="#0F172A" letter-spacing="-2">THERMOGYS</text>
+</svg>

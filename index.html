@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="assets/thermogys.svg" />
+    <title>THERMOGYS | Wearable Thermoregulation</title>
+    <meta name="description"
+        content="Applied Thermal R&D designs closed-loop thermoregulation systems for high-performance environments, industrial teams, and advanced wearable products. AKA: Cooling suit" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: "#f0f9ff",
+                            100: "#e0f2fe",
+                            400: "#38bdf8",
+                            500: "#0ea5e9",
+                            600: "#0284c7",
+                            700: "#0369a1"
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(14, 165, 233, 0.12), transparent 32%),
+                linear-gradient(135deg, #020617 0%, #07111f 100%);
+            color: #e2e8f0;
+        }
+
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 20px 45px rgba(2, 6, 23, 0.28);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            line-height: 1.16;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .section-copy {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #94a3b8;
+        }
+
+        .carousel-shell {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+            background: rgba(2, 6, 23, 0.65);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .carousel-slide {
+            position: relative;
+            min-width: 100%;
+        }
+
+        .carousel-slide img {
+            display: block;
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            inset: auto 0 0 0;
+            padding: 1rem 1.25rem 1.1rem;
+            background: linear-gradient(to top, rgba(2, 6, 23, 0.9), rgba(2, 6, 23, 0.18));
+            color: #f8fafc;
+            font-size: 0.95rem;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.45rem;
+            margin-top: 0.9rem;
+        }
+
+        .carousel-dot {
+            width: 0.7rem;
+            height: 0.7rem;
+            border-radius: 999px;
+            border: 0;
+            background: rgba(148, 163, 184, 0.5);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .carousel-dot.active {
+            background: #38bdf8;
+            transform: scale(1.1);
+        }
+
+        @media (min-width: 768px) {
+            .carousel-slide img {
+                height: 320px;
+            }
+        }
+
+        .feature-card {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
+            padding: 1.2rem;
+            background: rgba(15, 23, 42, 0.56);
+        }
+
+        .feature-card h3 {
+            margin-top: 0.85rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .feature-card p {
+            margin-top: 0.45rem;
+            font-size: 0.95rem;
+            line-height: 1.75;
+            color: #94a3b8;
+        }
+
+        ::selection {
+            background-color: #0284c7;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen antialiased bg-grid">
+    <header id="navbar"
+        class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-slate-950/75 backdrop-blur-xl">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-6 lg:px-8">
+            <a href="#home"
+                class="flex items-center text-slate-100">
+                <img src="assets/thermogys-white.svg" alt="THERMOGYS logo" class="h-9 w-auto max-w-[180px] object-contain" />
+            </a>
+
+            <nav class="hidden items-center gap-7 text-sm font-medium text-slate-400 md:flex">
+                <a href="#why" class="transition hover:text-white">Why it matters</a>
+                <a href="#how-it-works" class="transition hover:text-white">How it works</a>
+                <a href="#use-cases" class="transition hover:text-white">Use cases</a>
+                <a href="#technology" class="transition hover:text-white">Technology</a>
+                <a href="#b2b" class="transition hover:text-white">B2B</a>
+                <a href="#contact" class="transition hover:text-white">Contact</a>
+            </nav>
+
+            <button id="menuButton"
+                class="rounded-full border border-white/10 px-3 py-2 text-sm text-slate-200 md:hidden"
+                aria-controls="mobileMenu" aria-expanded="false">
+                Menu
+            </button>
+        </div>
+
+        <div id="mobileMenu" class="hidden border-t border-white/10 bg-slate-950/95 px-5 py-4 md:hidden">
+            <div class="flex flex-col gap-3 text-sm text-slate-300">
+                <a href="#why" class="transition hover:text-white">Why it matters</a>
+                <a href="#how-it-works" class="transition hover:text-white">How it works</a>
+                <a href="#use-cases" class="transition hover:text-white">Use cases</a>
+                <a href="#technology" class="transition hover:text-white">Technology</a>
+                <a href="#b2b" class="transition hover:text-white">B2B</a>
+                <a href="#contact" class="transition hover:text-white">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main id="home" class="pt-24">
+        <section
+            class="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-24">
+            <div class="reveal max-w-2xl">
+                <div
+                    class="inline-flex items-center gap-2 rounded-full border border-brand-400/20 bg-brand-500/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.28em] text-brand-300">
+                    <span class="h-2 w-2 rounded-full bg-brand-400"></span>
+                    TRCS ARCHITECTURE • ACTIVE COOLING CONTROL
+                </div>
+
+                <h1 class="mt-6 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+                    Portable cooling solution with embedded refrigeration.
+                </h1>
+
+                <p class="mt-6 text-lg leading-8 text-slate-400">
+                    On the market, cooling solutions are often either short-lived ice-pack systems
+                    or simple ventilation setups. THERMOGYS develops a portable, compressor-based
+                    cooling solution for private users and professionals who need sustained thermal relief
+                    in real heat.
+                </p>
+
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <a href="#technology"
+                        class="rounded-full bg-brand-600 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-brand-500">
+                        View Technology
+                    </a>
+                    <a href="#contact"
+                        class="rounded-full border border-white/10 px-6 py-3 text-center text-sm font-semibold text-slate-200 transition hover:border-brand-400 hover:text-brand-300">
+                        R&D inquiries
+                    </a>
+                </div>
+
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300">
+                        Portable active cooling
+                    </span>
+                    <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300">
+                        Sustained thermal relief
+                    </span>
+                    <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300">
+                        Private & professional use
+                    </span>
+
+                </div>
+            </div>
+
+            <div class="reveal">
+                <div class="glass rounded-3xl p-6 sm:p-8">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">System Capabilities</p>
+                        <span
+                            class="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
+                            In active development
+                        </span>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-rose-500/10 text-sm font-semibold text-rose-300">
+                                    01</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white">Thermal sensing</p>
+                                    <p class="text-sm text-slate-400">Sensor placement and body mapping</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ml-6 rounded-2xl border border-white/10 bg-slate-950/70 p-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-500/10 text-sm font-semibold text-brand-300">
+                                    02</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white">Embedded response</p>
+                                    <p class="text-sm text-slate-400">Low-latency control logic</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ml-12 rounded-2xl border border-white/10 bg-slate-950/70 p-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/10 text-sm font-semibold text-cyan-300">
+                                    03</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white">Active heat extraction</p>
+                                    <p class="text-sm text-slate-400">Compact closed-loop thermal management</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="why" class="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+                <div class="reveal glass rounded-3xl p-8 sm:p-10">
+                    <p class="inline-flex max-w-fit rounded-full border border-brand-400/20 bg-brand-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-300 shadow-[0_0_25px_rgba(56,189,248,0.12)]">Why it matters</p>
+                    <h2 class="section-title mt-4">
+                        Most field cooling systems are either short-lived or underpowered.
+                    </h2>
+                    <p class="section-copy mt-5">
+                        Current solutions generally fall into two industrial failure modes:
+                    </p>
+                    <ul class="mt-5 space-y-3 text-sm leading-7 text-slate-300">
+                        <li class="flex gap-3">
+                            <span class="mt-1 inline-flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-red-500"></span>
+                            <span><strong>Ice-pack based cooling</strong> with limited duration and no active thermal control.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="mt-1 inline-flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-red-500"></span>
+                            <span><strong>Ventilation-only systems</strong> that rely on airflow without embedded refrigeration.</span>
+                        </li>
+                    </ul>
+                    <p class="section-copy mt-5">
+                        THERMOGYS combines wearable form factor, embedded refrigeration and closed-loop control for stable thermal regulation in demanding conditions.
+                    </p>
+                </div>
+
+                <div class="reveal rounded-3xl border border-white/10 bg-slate-900/60 p-8 sm:p-10">
+                    <ul class="space-y-4 text-sm leading-7 text-slate-300">
+                        <li class="flex gap-3">
+                            <span class="mt-1 inline-flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-brand-400"></span>
+                            <span><strong>Portable active cooling</strong> for personal and professional use.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="mt-1 inline-flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-brand-400"></span>
+                            <span>More than ventilation: <strong>true thermal regulation</strong>.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="mt-1 inline-flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-brand-400"></span>
+                            <span><strong>Built for sustained comfort</strong> in high-heat environments.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="mt-1 inline-flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-brand-400"></span>
+                            <span><strong>Precision-controlled PID algorithm</strong> for adaptive, real-time thermal response.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="mt-1 inline-flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-brand-400"></span>
+                            <span><strong>Modular architecture</strong> optimized for seamless OEM integration.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="mt-1 inline-flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-brand-400"></span>
+                            <span><strong>Mitigates physiological stress</strong> to sustain cognitive performance in critical roles.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                
+            </div>
+        </section>
+
+        <section id="how-it-works" class="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div class="reveal mb-10 max-w-2xl">
+                <p class="inline-flex max-w-fit rounded-full border border-brand-400/20 bg-brand-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-300 shadow-[0_0_25px_rgba(56,189,248,0.12)]">How it works</p>
+                <h2 class="section-title mt-4">
+                    Compact embedded refrigeration with precise closed-loop control.
+                </h2>
+                <p class="section-copy mt-4">
+                    Configure a thermal setpoint, engage the refrigeration system, and maintain stable temperature through intelligent PID regulation.
+                </p>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-3">
+                <article class="reveal glass rounded-3xl p-8">
+                    <div class="mb-4 flex items-center justify-between gap-3">
+                        <div class="text-3xl font-semibold text-brand-400">01</div>
+                        <img src="assets/icon-target.svg" alt="Thermal target icon" class="h-10 w-10 object-contain" />
+                    </div>
+                    <h3 class="mt-4 text-xl font-semibold text-white">Define thermal target</h3>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">
+                        Set the target temperature or cooling demand through the control interface.
+                    </p>
+                </article>
+
+                <article class="reveal glass rounded-3xl p-8" style="transition-delay: 120ms;">
+                    <div class="mb-4 flex items-center justify-between gap-3">
+                        <div class="text-3xl font-semibold text-brand-400">02</div>
+                        <img src="assets/icon-snowflake.svg" alt="Refrigeration icon" class="h-10 w-10 object-contain" />
+                    </div>
+                    <h3 class="mt-4 text-xl font-semibold text-white">Activate refrigeration</h3>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">
+                        The compressor and pump engage to provide active thermal extraction, not simple airflow.
+                    </p>
+                </article>
+
+                <article class="reveal glass rounded-3xl p-8" style="transition-delay: 240ms;">
+                    <div class="mb-4 flex items-center justify-between gap-3">
+                        <div class="text-3xl font-semibold text-brand-400">03</div>
+                        <img src="assets/icon-stability.svg" alt="Stability icon" class="h-10 w-10 object-contain" />
+                    </div>
+                    <h3 class="mt-4 text-xl font-semibold text-white">Sustain thermal stability</h3>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">
+                        PID-based control holds the system at the selected setpoint despite external load changes.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section id="use-cases" class="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div class="reveal mb-10 max-w-2xl">
+                <p class="inline-flex max-w-fit rounded-full border border-brand-400/20 bg-brand-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-300 shadow-[0_0_25px_rgba(56,189,248,0.12)]">Use cases</p>
+                <h2 class="section-title mt-4">
+                    Built for people who need more than a fan or a temporary solution.
+                </h2>
+                <p class="section-copy mt-4">
+                    The same architecture can support private comfort, field use, and professional heat-exposure scenarios.
+                </p>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-3">
+                <article class="reveal glass rounded-3xl p-8">
+                    <h3 class="text-xl font-semibold text-white">Industrial workers</h3>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">
+                        For long shifts in hot environments, where comfort and thermal safety are tightly linked.
+                    </p>
+                </article>
+
+                <article class="reveal glass rounded-3xl p-8" style="transition-delay: 120ms;">
+                    <h3 class="text-xl font-semibold text-white">Outdoor and field use</h3>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">
+                        For people exposed to sun, heat, and sustained physical effort in demanding conditions.
+                    </p>
+                </article>
+
+                <article class="reveal glass rounded-3xl p-8" style="transition-delay: 240ms;">
+                    <h3 class="text-xl font-semibold text-white">Private and professional wear</h3>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">
+                        A wearable solution that goes beyond passive systems and brings active thermal relief.
+                    </p>
+                </article>
+            </div>
+
+            <div class="reveal mt-8">
+                <div class="rounded-3xl border border-white/10 bg-slate-900/50 p-4 sm:p-5">
+                    <div class="mb-4">
+                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-brand-300">Concrete applications</p>
+                        <p class="mt-2 text-sm text-slate-400">
+                            Three quick examples of where the system is aimed.
+                        </p>
+                    </div>
+            
+                    <div class="carousel-shell">
+                        <div id="whyCarouselTrack" class="carousel-track"></div>
+                    </div>
+            
+                    <div id="whyCarouselDots" class="carousel-dots" aria-label="Carousel navigation"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="technology" class="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div class="reveal mb-10 max-w-2xl">
+                <p class="inline-flex max-w-fit rounded-full border border-brand-400/20 bg-brand-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-300 shadow-[0_0_25px_rgba(56,189,248,0.12)]">Technology</p>
+                <h2 class="section-title mt-4">
+                    TRCS Architecture: Portable Embedded Refrigeration.
+                </h2>
+                <p class="section-copy mt-4">
+                    Our proprietary Thermo Regulated Cooling Systems (TRCS) architecture delivers precise, active thermal control optimized
+                    for wearable integration.
+                </p>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-3">
+                <article class="reveal glass rounded-3xl p-8">
+                    <h3 class="text-xl font-semibold text-white">Portable cooling architecture</h3>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">
+                        A compact, compressor-based cooling path built for wearability and sustained use using R1234yf.
+                    </p>
+                </article>
+
+                <article class="reveal glass rounded-3xl p-8" style="transition-delay: 120ms;">
+                    <h3 class="text-xl font-semibold text-white">Embedded regulation</h3>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">
+                        Sensing and control logic tuned to maintain stable thermal performance in real conditions using PID control.
+                    </p>
+                </article>
+
+                <article class="reveal glass rounded-3xl p-8" style="transition-delay: 240ms;">
+                    <h3 class="text-xl font-semibold text-white">Wearable integration</h3>
+                    <p class="mt-4 text-sm leading-7 text-slate-400">
+                        A format designed for integration into personal gear and professional equipment.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section id="b2b" class="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div class="reveal glass rounded-3xl p-8 sm:p-10 lg:p-12">
+                <div class="grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+                    <div>
+                        <p class="inline-flex max-w-fit rounded-full border border-brand-400/20 bg-brand-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-300 shadow-[0_0_25px_rgba(56,189,248,0.12)]">
+                            OEM & Technology Licensing
+                        </p>
+                        <h2 class="section-title mt-4">
+                            Demonstrating TRCS with a pilot partner.
+                        </h2>
+                        <p class="section-copy mt-5">
+                            The TRCS architecture is currently deployed in an exclusive pilot with a partner in the industrial
+                            wearable sector. Our production capacity is dedicated to optimizing this first field iteration rather
+                            than accepting broad public orders.
+                        </p>
+                    </div>
+
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="rounded-2xl border border-white/10 bg-slate-950/60 p-5">
+                            <p class="text-sm font-semibold text-white">Proprietary Core System</p>
+                            <p class="mt-2 text-sm leading-7 text-slate-400">Our algorithmic logic and fluid routing
+                                architecture are standardized, tested, and exclusive to our framework.</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-slate-950/60 p-5">
+                            <p class="text-sm font-semibold text-brand-400">OEM Integration (Sales)</p>
+                            <p class="mt-2 text-sm leading-7 text-slate-400">We supply the thermal modules and logic controllers
+                                for direct integration into your manufactured gear.</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-slate-950/60 p-5">
+                            <p class="text-sm font-semibold text-brand-400">Application R&D</p>
+                            <p class="mt-2 text-sm leading-7 text-slate-400">Our engineering consulting is strictly dedicated to
+                                adapting our system's form factor to your product's constraints.</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-white/10 bg-slate-950/60 p-5">
+                            <p class="text-sm font-semibold text-white">Licensing & Supply</p>
+                            <p class="mt-2 text-sm leading-7 text-slate-400">Flexible B2B models ranging from compiled software
+                                licensing (.hex) to complete hardware module supply.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div class="reveal glass rounded-3xl p-8 sm:p-10 border border-white/10">
+                <p class="inline-flex max-w-fit rounded-full border border-brand-400/20 bg-brand-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-300 shadow-[0_0_25px_rgba(56,189,248,0.12)]">DEVELOPMENT TIMELINE</p>
+                <h2 class="section-title mt-4">R&D Roadmap & Work Packages</h2>
+                <p class="section-copy mt-4">
+                    A visual roadmap for the TRCS demonstrator, with clear milestones, active work packages, and the next validation phases.
+                </p>
+                <div class="mt-10 overflow-hidden">
+                    <div class="relative pl-20">
+                        <div class="absolute left-10 top-6 bottom-0 w-1 rounded-full bg-brand-400/70"></div>
+                        <div class="space-y-10">
+                            <div class="relative">
+                                <div class="max-w-3xl rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
+                                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <p class="text-xs font-semibold uppercase text-brand-400">Nov 2025 — Sept 2026</p>
+                                        <span class="inline-flex rounded-full border border-brand-400/20 bg-brand-400/10 px-3 py-1 text-xs font-semibold text-brand-400">Phase 1 - Complete</span>
+                                    </div>
+                                    <h3 class="mt-4 text-xl font-semibold text-white">Theoretical Framework & Feasibility</h3>
+                                    <p class="mt-3 text-sm leading-7 text-slate-400">
+                                        Thermodynamic modeling and component sourcing. This phase culminates in a technical validation report, establishing the foundational architecture for embedded refrigeration.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <div class="max-w-3xl rounded-3xl border border-brand-400/20 bg-slate-900/90 p-6 shadow-[0_24px_60px_rgba(2,6,23,0.28)]">
+                                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <p class="text-xs font-semibold uppercase text-brand-400">Ongoing</p>
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <span class="inline-flex rounded-full border border-brand-400/20 bg-brand-400/10 px-3 py-1 text-xs font-semibold text-brand-400">Phase 2</span>
+                                            <span class="inline-flex rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-300 ring-1 ring-red-500/25">We are here</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="mt-4 text-xl font-semibold text-white">Parallel Work Packages</h3>
+                                    <p class="mt-3 text-sm leading-7 text-slate-400">
+                                        Concurrent engineering tracks to accelerate deployment and drive the demonstrator into field validation.
+                                    </p>
+                                    <ul class="mt-4 space-y-3 text-sm leading-7 text-slate-400">
+                                        <li class="flex gap-3">
+                                            <span class="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-brand-400"></span>
+                                            <span><strong>WP1 - Hardware Prototyping:</strong> Physical integration of the micro-compressor, heat exchangers, and fluid routing.</span>
+                                        </li>
+                                        <li class="flex gap-3">
+                                            <span class="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-brand-400"></span>
+                                            <span><strong>WP2 - Control Logic:</strong> Development of the automated PID algorithm for low-latency thermal regulation and sensor data processing.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <div class="max-w-3xl rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
+                                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <p class="text-xs font-semibold uppercase text-brand-400">Upcoming</p>
+                                        <span class="inline-flex rounded-full border border-brand-400/20 bg-brand-400/10 px-3 py-1 text-xs font-semibold text-brand-400">Phase 3</span>
+                                    </div>
+                                    <h3 class="mt-4 text-xl font-semibold text-white">Field Testing & Validation</h3>
+                                    <p class="mt-3 text-sm leading-7 text-slate-400">
+                                        Exclusive deployment with our pilot partner. Real-world testing to validate thermal endurance, mechanical resilience, and physiological stress mitigation.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <div class="max-w-3xl rounded-3xl border border-white/10 bg-slate-900/80 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
+                                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <p class="text-xs font-semibold uppercase text-brand-400">Future</p>
+                                        <span class="inline-flex rounded-full border border-brand-400/20 bg-brand-400/10 px-3 py-1 text-xs font-semibold text-brand-400">Phase 4</span>
+                                    </div>
+                                    <h3 class="mt-4 text-xl font-semibold text-white">Architecture Iteration & OEM Supply</h3>
+                                    <p class="mt-3 text-sm leading-7 text-slate-400">
+                                        Hardware optimization based on field telemetry and the transition to OEM supply integration.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="mx-auto max-w-4xl px-5 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div class="reveal glass rounded-3xl p-8 text-center sm:p-10">
+                <p class="inline-flex max-w-fit rounded-full border border-brand-400/20 bg-brand-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-300 shadow-[0_0_25px_rgba(56,189,248,0.12)]">Contact us</p>
+                <h2 class="mt-4 text-3xl font-semibold text-white sm:text-4xl">
+                    Bring THERMOGYS into your next product.
+                </h2>
+                <p class="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-400">
+                    <strong class="font-semibold text-white">We are not accepting new public orders at this time.</strong> For future R&D discussions or to be informed when OEM licensing opens, contact us.
+                </p>
+
+                <form id="contactForm" class="mx-auto mt-10 max-w-2xl space-y-4 text-left">
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <label class="block text-sm font-medium text-slate-300">
+                            Company name
+                            <input type="text" name="Company" required class="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900/80 px-4 py-3 text-sm text-white outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20" />
+                        </label>
+                        <label class="block text-sm font-medium text-slate-300">
+                            Role / function
+                            <input type="text" name="Role" required class="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900/80 px-4 py-3 text-sm text-white outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20" />
+                        </label>
+                    </div>
+
+                    <label class="block text-sm font-medium text-slate-300">
+                        Inquiry details
+                        <textarea name="Inquiry" rows="4" required class="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900/80 px-4 py-3 text-sm text-white outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20"></textarea>
+                    </label>
+
+                    <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                        <button type="submit" class="rounded-full bg-brand-600 px-7 py-3 text-sm font-semibold text-white transition hover:bg-brand-500">
+                            Request information
+                        </button>
+                        <p class="text-xs text-slate-500 sm:mt-0">Your email client will open so you can send the request directly.</p>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-white/10 bg-slate-950/70">
+        <div
+            class="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-8 text-sm text-slate-400 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+            <div>
+                <p class="font-semibold text-slate-100">Applied Thermal R&D</p>
+                <p class="mt-2">THERMOGYS - 2026 Wearable thermoregulation systems.</p>
+            </div>
+
+            <div class="flex flex-wrap gap-4">
+                <a href="#" class="transition hover:text-white">Terms & Conditions</a>
+                <a href="#" class="transition hover:text-white">Privacy Policy</a>
+                <a href="#contact" class="transition hover:text-white">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("active");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+        const navbar = document.getElementById("navbar");
+        const button = document.getElementById("menuButton");
+        const menu = document.getElementById("mobileMenu");
+
+        function closeMenu() {
+            if (!button || !menu) return;
+            menu.classList.add("hidden");
+            button.setAttribute("aria-expanded", "false");
+        }
+
+        function openMenu() {
+            if (!button || !menu) return;
+            menu.classList.remove("hidden");
+            button.setAttribute("aria-expanded", "true");
+        }
+
+        button?.addEventListener("click", () => {
+            if (!menu) return;
+            if (menu.classList.contains("hidden")) {
+                openMenu();
+            } else {
+                closeMenu();
+            }
+        });
+
+        document.querySelectorAll("#mobileMenu a").forEach((link) => {
+            link.addEventListener("click", closeMenu);
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!menu || !button) return;
+            if (menu.contains(event.target) || button.contains(event.target)) {
+                return;
+            }
+            closeMenu();
+        });
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth >= 768) {
+                closeMenu();
+            }
+        });
+
+        window.addEventListener("scroll", () => {
+            if (!navbar) return;
+            if (window.scrollY > 30) {
+                navbar.classList.add("shadow-lg", "shadow-black/20");
+            } else {
+                navbar.classList.remove("shadow-lg", "shadow-black/20");
+            }
+        });
+
+        const whyCarouselTrack = document.getElementById("whyCarouselTrack");
+        const whyCarouselDots = document.getElementById("whyCarouselDots");
+        const whyCarouselCaptions = [
+            "Industrial heat exposure",
+            "Cosplay industry",
+            "Hot environment and environmental risk"
+        ];
+
+        const whyCarouselImageCandidates = [
+            ["assets/liquid-molten-steel-industry-picture-id492798423.jpg"],
+            ["assets/space_marine.jpg"],
+            ["assets/sun-related-hazards.jpg"]
+        ];
+
+        function resolveImage(candidates) {
+            return new Promise((resolve) => {
+                const tryCandidate = (index) => {
+                    if (index >= candidates.length) {
+                        resolve(null);
+                        return;
+                    }
+
+                    const img = new Image();
+                    img.onload = () => resolve(candidates[index]);
+                    img.onerror = () => tryCandidate(index + 1);
+                    img.src = candidates[index];
+                };
+
+                tryCandidate(0);
+            });
+        }
+
+        async function initWhyCarousel() {
+            if (!whyCarouselTrack || !whyCarouselDots) return;
+
+            const slides = [];
+
+            for (let i = 0; i < whyCarouselCaptions.length; i += 1) {
+                const src = await resolveImage(whyCarouselImageCandidates[i] || []);
+
+                const slide = document.createElement("div");
+                slide.className = "carousel-slide";
+
+                if (src) {
+                    const img = document.createElement("img");
+                    img.src = src;
+                    img.alt = whyCarouselCaptions[i];
+                    slide.appendChild(img);
+                } else {
+                    const fallback = document.createElement("div");
+                    fallback.className = "flex min-h-[260px] items-center justify-center bg-slate-950/80 px-6 text-center text-sm text-slate-400 sm:min-h-[320px]";
+                    fallback.textContent = "Images non trouvées dans assets.";
+                    slide.appendChild(fallback);
+                }
+
+                const caption = document.createElement("div");
+                caption.className = "carousel-caption";
+                caption.textContent = whyCarouselCaptions[i];
+                slide.appendChild(caption);
+
+                slides.push(slide);
+            }
+
+            whyCarouselTrack.innerHTML = "";
+            slides.forEach((slide) => whyCarouselTrack.appendChild(slide));
+
+            if (slides.length <= 1) {
+                return;
+            }
+
+            const dots = slides.map((_, index) => {
+                const dot = document.createElement("button");
+                dot.className = "carousel-dot";
+                dot.setAttribute("type", "button");
+                dot.setAttribute("aria-label", `Afficher la photo ${index + 1}`);
+                dot.addEventListener("click", () => {
+                    currentIndex = index;
+                    render();
+                });
+                whyCarouselDots.appendChild(dot);
+                return dot;
+            });
+
+            let currentIndex = 0;
+
+            function render() {
+                whyCarouselTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle("active", index === currentIndex);
+                });
+            }
+
+            render();
+
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % slides.length;
+                render();
+            }, 4500);
+        }
+
+        const contactForm = document.getElementById("contactForm");
+        const contactEmail = "contact@thermogys.com";
+
+        contactForm?.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(contactForm);
+            const company = formData.get("Company")?.toString().trim() || "N/A";
+            const role = formData.get("Role")?.toString().trim() || "N/A";
+            const inquiry = formData.get("Inquiry")?.toString().trim() || ""
+;
+            const subject = encodeURIComponent("OEM / R&D Inquiry from " + company);
+            const body = encodeURIComponent(
+                `Company: ${company}\nRole / function: ${role}\n\nInquiry details:\n${inquiry}`
+            );
+
+            window.location.href = `mailto:${contactEmail}?subject=${subject}&body=${body}`;
+        });
+
+        initWhyCarousel();
+    </script>
+</body>
+
+</html>

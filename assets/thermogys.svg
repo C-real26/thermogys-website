@@ -1,0 +1,30 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="clip-left">
+      <rect x="0" y="0" width="197.5" height="400" />
+    </clipPath>
+    <clipPath id="clip-right">
+      <rect x="202.5" y="0" width="400" height="400" />
+    </clipPath>
+  </defs>
+
+  <!-- Left half: navy -->
+  <g clip-path="url(#clip-left)">
+    <circle cx="200" cy="200" r="170" fill="#0F172A" />
+  </g>
+
+  <!-- Right half: cyan -->
+  <g clip-path="url(#clip-right)">
+    <circle cx="200" cy="200" r="170" fill="#06B6D4" />
+  </g>
+
+  <!-- T path: left half cyan on navy -->
+  <g clip-path="url(#clip-left)">
+    <path d="M 90 110 L 310 110 L 310 158 L 227 158 L 227 295 L 173 295 L 173 158 L 90 158 Z" fill="#06B6D4" />
+  </g>
+
+  <!-- T path: right half navy on cyan -->
+  <g clip-path="url(#clip-right)">
+    <path d="M 90 110 L 310 110 L 310 158 L 227 158 L 227 295 L 173 295 L 173 158 L 90 158 Z" fill="#0F172A" />
+  </g>
+</svg>
