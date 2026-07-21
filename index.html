@@ -656,7 +656,7 @@
                     </label>
 
                     <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                        <button type="submit" class="rounded-full bg-brand-600 px-7 py-3 text-sm font-semibold text-white transition hover:bg-brand-500">
+                        <button id="contactButton" type="button" class="rounded-full bg-brand-600 px-7 py-3 text-sm font-semibold text-white transition hover:bg-brand-500">
                             Request information
                         </button>
                         <p class="text-xs text-slate-500 sm:mt-0">Your email client will open so you can send the request directly.</p>
@@ -847,23 +847,36 @@
         }
 
         const contactForm = document.getElementById("contactForm");
+        const contactButton = document.getElementById("contactButton");
         const contactEmail = "contact@thermogys.com";
 
-        contactForm?.addEventListener("submit", (event) => {
-            event.preventDefault();
+        function openContactMailClient() {
+            if (!contactForm) return;
 
             const formData = new FormData(contactForm);
             const company = formData.get("Company")?.toString().trim() || "N/A";
             const role = formData.get("Role")?.toString().trim() || "N/A";
-            const inquiry = formData.get("Inquiry")?.toString().trim() || ""
-;
-            const subject = encodeURIComponent("OEM / R&D Inquiry from " + company);
-            const body = encodeURIComponent(
-                `Company: ${company}\nRole / function: ${role}\n\nInquiry details:\n${inquiry}`
-            );
+            const inquiry = formData.get("Inquiry")?.toString().trim() || "No details provided.";
 
-            window.location.href = `mailto:${contactEmail}?subject=${subject}&body=${body}`;
+            const subject = "OEM / R&D Inquiry from " + company;
+            const body = [
+                `Company: ${company}`,
+                `Role / function: ${role}`,
+                "",
+                "Inquiry details:",
+                inquiry
+            ].join("\n");
+
+            const mailtoLink = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+
+        contactForm?.addEventListener("submit", (event) => {
+            event.preventDefault();
+            openContactMailClient();
         });
+
+        contactButton?.addEventListener("click", openContactMailClient);
 
         initWhyCarousel();
     </script>
